@@ -1,0 +1,397 @@
+package baitaptuan5;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
+import baitaptuan5.DiGraph.Edge;
+
+public class UnGraph extends Graph {
+
+	@Override
+	public void addEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		if (!isValidVertex(v1) || !isValidVertex(v2))
+			return;
+		adjacencyMatrix[v1][v2] = 1;
+		adjacencyMatrix[v2][v1] = 1;
+		System.out.println("thanhcog");
+
+	}
+
+	@Override
+	public void removeEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		if (!isValidVertex(v1) || !isValidVertex(v2))
+			return;
+		adjacencyMatrix[v1][v2] = 0;
+		adjacencyMatrix[v2][v1] = 0;
+
+	}
+
+	public int deg(int v) {
+		// TODO Auto-generated method stub
+		if (!isValidVertex(v)) {
+			System.out.println("đỉnh không hợp lệ");
+			return -1;
+		}
+		int deg = 0;
+		for (int i = 0; i < numVertices; i++) {
+			deg += adjacencyMatrix[v][i];
+
+		}
+		return deg;
+	}
+	// tổng tất cả các phần tử 1 trong ma trận chia 2 (định lí bắt tay, tổng tất cả
+	// các bậc của đỉnh bằng 2 lần cạnh)
+
+	@Override
+	public int numEdges() {
+		// TODO Auto-generated method stub
+		int sum = 0;
+		for (int i = 0; i < numVertices; i++) {
+			for (int j = 0; j < numVertices; j++) {
+				sum += adjacencyMatrix[i][j];
+
+			}
+
+		}
+		return sum / 2;
+	}
+	// tính tổng bậc của đỉnh và kiểm chứng xem có đúng hay không(tổng bậc của đỉnh
+	// =2m);
+
+	@Override
+	public int sumDeg() {
+		// TODO Auto-generated method stub
+		int sum = 0;
+		for (int i = 0; i < numVertices; i++) {
+			sum += deg(i);
+
+		}
+		if (sum == 2 * numEdges()) {
+			System.out.println("Đúng định lý tổng bậc = 2 * số cạnh");
+		} else {
+			System.out.println("làm sai phần nào đó rồi");
+		}
+		return sum;
+	}
+
+	@Override
+	public boolean isConnected() {
+		if (numVertices == 0) return true;
+	    int[] res = DFS(0);
+	    return res.length == numVertices;
+	}
+
+	@Override
+	public int[] DFS(int startVertex) {
+		boolean[] visited = new boolean[numVertices];
+	    List<Integer> result = new ArrayList<>();
+	    Stack<Integer> stack = new Stack<>();
+	    
+	    stack.push(startVertex);
+	    while (!stack.isEmpty()) {
+	        int v = stack.pop();
+	        if (!visited[v]) {
+	            visited[v] = true;
+	            result.add(v);
+	            for (int i = numVertices - 1; i >= 0; i--) {
+	                if (adjacencyMatrix[v][i] == 1 && !visited[i]) stack.push(i);
+	            }
+	        }
+	    }
+	    return result.stream().mapToInt(i -> i).toArray();
+	}
+
+	@Override
+	public void connectedComponents() {
+		int count = 0;
+		int[] index = new int[numVertices];
+		Arrays.fill(index, -1);
+		for (int i = 0; i < numVertices; i++) {
+			if (visited[i] == false) {
+				count++;
+				index[i] = count;
+				DFSRe(i);
+				for (int j = 0; j < numVertices; j++) {
+					if (visited[j] == true && index[j] == -1) {
+						index[j] = count;
+					}
+				}
+			}
+		}
+
+		for (int i = 1; i <= count; i++) {
+			System.out.print("Thanh phan lien thong thu " + i + "  gom cac dinh: ");
+			for (int j = 0; j < numVertices; j++) {
+				if (index[j] == i) {
+					System.out.print((j + 1) + " ");
+				}
+			}
+			System.out.println();
+
+		}
+	}
+
+	private void DFSRe(int v) {
+	    // Đánh dấu đỉnh hiện tại đã thăm
+	    visited[v] = true;
+	    
+	    // Duyệt qua tất cả các đỉnh kề với v
+	    for (int i = 0; i < numVertices; i++) {
+	        // Nếu có cạnh nối và đỉnh i chưa được thăm
+	        if (adjacencyMatrix[v][i] != 0 && !visited[i]) {
+	            DFSRe(i); // Đệ quy để thăm tiếp
+	        }
+	    }
+	}
+
+	@Override
+	public void findPath(int s, int t) {
+		// TODO Auto-generated method stub
+		visited[s] = true;
+		System.out.print((s + 1) + " ");
+		if (s == t) {
+			return;
+		}
+
+		for (int i = 0; i < numVertices; i++) {
+			if (adjacencyMatrix[s][i] > 0 && visited[i]==false) {
+				findPath(i, t);
+				return; 
+
+			}
+		}
+	}
+	public boolean isBipartite() {
+	    int[] color = new int[numVertices]; // 0: chưa tô, 1: màu A, -1: màu B
+	    Arrays.fill(color, 0);
+
+	    for (int i = 0; i < numVertices; i++) {
+	        if (color[i] == 0) {
+	            Queue<Integer> q = new LinkedList<>();
+	            q.add(i);
+	            color[i] = 1;
+	            while (!q.isEmpty()) {
+	                int u = q.poll();
+	                for (int v = 0; v < numVertices; v++) {
+	                    if (adjacencyMatrix[u][v] != 0) {
+	                        if (color[v] == 0) {
+	                            color[v] = -color[u];
+	                            q.add(v);
+	                        } else if (color[v] == color[u]) {
+	                            return false;
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
+	    return true;
+	}
+	// Bài 15 & 16: Kiểm tra điều kiện (Dành cho đồ thị vô hướng)
+	public boolean isEulerGraph() {
+	    if (!isConnected()) return false;
+	    for (int i = 0; i < numVertices; i++) {
+	        if (deg(i) % 2 != 0) return false;
+	    }
+	    return true;
+	}
+
+	public boolean isHalfEulerGraph() {
+	    if (!isConnected()) return false;
+	    int oddDegCount = 0;
+	    for (int i = 0; i < numVertices; i++) {
+	        if (deg(i) % 2 != 0) oddDegCount++;
+	    }
+	    return oddDegCount == 2;
+	}
+
+	// Bài 17: Tìm chu trình Euler (Hierholzer)
+	public void findEulerCycle() {
+	    if (!isEulerGraph()) {
+	        System.out.println("Khong co chu trinh Euler");
+	        return;
+	    }
+	    Stack<Integer> stack = new Stack<>();
+	    List<Integer> cycle = new ArrayList<>();
+	    int[][] tempMatrix = deepCopy(adjacencyMatrix);
+	    stack.push(0);
+
+	    while (!stack.isEmpty()) {
+	        int u = stack.peek();
+	        int v = findNextEdge(u, tempMatrix);
+	        if (v != -1) {
+	            tempMatrix[u][v] = tempMatrix[v][u] = 0; // Xóa cạnh đã đi
+	            stack.push(v);
+	        } else {
+	            cycle.add(stack.pop());
+	        }
+	    }
+	    Collections.reverse(cycle);
+	    System.out.println("Chu trinh Euler: " + cycle);
+	}
+
+	private int findNextEdge(int u, int[][] matrix) {
+	    for (int v = 0; v < numVertices; v++) {
+	        if (matrix[u][v] != 0) return v;
+	    }
+	    return -1;
+	}
+	public void findHamiltonCycle() {
+	    int[] path = new int[numVertices + 1];
+	    Arrays.fill(path, -1);
+	    path[0] = 0; // Bắt đầu từ đỉnh 0
+	    if (hamiltonCycleUtil(path, 1)) {
+	        System.out.println("Chu trinh Hamilton: " + Arrays.toString(path));
+	    } else {
+	        System.out.println("Khong co chu trinh Hamilton");
+	    }
+	}
+
+	private boolean hamiltonCycleUtil(int[] path, int pos) {
+	    if (pos == numVertices) {
+	        return adjacencyMatrix[path[pos - 1]][path[0]] != 0;
+	    }
+	    for (int v = 1; v < numVertices; v++) {
+	        if (isSafe(v, path, pos)) {
+	            path[pos] = v;
+	            if (hamiltonCycleUtil(path, pos + 1)) return true;
+	            path[pos] = -1;
+	        }
+	    }
+	    return false;
+	}
+
+	private boolean isSafe(int v, int[] path, int pos) {
+	    if (adjacencyMatrix[path[pos - 1]][v] == 0) return false;
+	    for (int i = 0; i < pos; i++) if (path[i] == v) return false;
+	    return true;
+	}
+	// Bài 22: Thuật toán Prim
+	public int[][] prim(int start) {
+	    int[][] mst = new int[numVertices][numVertices];
+	    int[] parent = new int[numVertices];
+	    int[] key = new int[numVertices];
+	    boolean[] inMST = new boolean[numVertices];
+
+	    Arrays.fill(key, Integer.MAX_VALUE);
+	    key[start] = 0;
+	    parent[start] = -1;
+
+	    for (int count = 0; count < numVertices - 1; count++) {
+	        int u = -1;
+	        for (int i = 0; i < numVertices; i++)
+	            if (!inMST[i] && (u == -1 || key[i] < key[u])) u = i;
+
+	        inMST[u] = true;
+	        for (int v = 0; v < numVertices; v++) {
+	            if (adjacencyMatrix[u][v] != 0 && !inMST[v] && adjacencyMatrix[u][v] < key[v]) {
+	                parent[v] = u;
+	                key[v] = adjacencyMatrix[u][v];
+	            }
+	        }
+	    }
+	    // Chuyển parent[] thành ma trận kề cho MST
+	    for (int i = 1; i < numVertices; i++) {
+	        if (parent[i] != -1) mst[parent[i]][i] = mst[i][parent[i]] = adjacencyMatrix[i][parent[i]];
+	    }
+	    return mst;
+	}
+	public int[][] spanningTreeDFS(int start) {
+	    int[][] tree = new int[numVertices][numVertices];
+	    boolean[] visited = new boolean[numVertices];
+	    dfsTree(start, visited, tree);
+	    return tree;
+	}
+
+	private void dfsTree(int u, boolean[] visited, int[][] tree) {
+	    visited[u] = true;
+	    for (int v = 0; v < numVertices; v++) {
+	        if (adjacencyMatrix[u][v] != 0 && !visited[v]) {
+	            tree[u][v] = tree[v][u] = 1; // Lưu cạnh vào cây
+	            dfsTree(v, visited, tree);
+	        }
+	    }
+	}
+	private int[][] deepCopy(int[][] matrix) {
+	    if (matrix == null) return null;
+	    int[][] result = new int[matrix.length][];
+	    for (int i = 0; i < matrix.length; i++) {
+	        result[i] = matrix[i].clone();
+	    }
+	    return result;
+	}
+	// Lớp hỗ trợ lưu trữ cạnh
+	class Edge implements Comparable<Edge> {
+	    int src, dest, weight;
+	    public Edge(int src, int dest, int weight) {
+	        this.src = src;
+	        this.dest = dest;
+	        this.weight = weight;
+	    }
+	    @Override
+	    public int compareTo(Edge other) {
+	        return this.weight - other.weight;
+	    }
+	}
+
+	// Phương thức Kruskal trong lớp Graph
+	public int[][] kruskal() {
+	    int[][] mstMatrix = new int[numVertices][numVertices];
+	    List<Edge> edges = new ArrayList<>();
+
+	    // 1. Thu thập tất cả các cạnh (với đồ thị vô hướng chỉ lấy nửa tam giác ma trận)
+	    for (int i = 0; i < numVertices; i++) {
+	        for (int j = i + 1; j < numVertices; j++) {
+	            if (adjacencyMatrix[i][j] > 0) {
+	                edges.add(new Edge(i, j, adjacencyMatrix[i][j]));
+	            }
+	        }
+	    }
+
+	    // 2. Sắp xếp các cạnh theo trọng số tăng dần
+	    Collections.sort(edges);
+
+	    // 3. Sử dụng Union-Find để xây dựng cây bao trùm
+	    int[] parent = new int[numVertices];
+	    for (int i = 0; i < numVertices; i++) parent[i] = i;
+
+	    int edgesCount = 0;
+	    for (Edge edge : edges) {
+	        if (edgesCount == numVertices - 1) break;
+
+	        int rootSrc = findRoot(parent, edge.src);
+	        int rootDest = findRoot(parent, edge.dest);
+
+	        // Nếu thêm cạnh này không tạo thành chu trình
+	        if (rootSrc != rootDest) {
+	            mstMatrix[edge.src][edge.dest] = edge.weight;
+	            mstMatrix[edge.dest][edge.src] = edge.weight;
+	            union(parent, rootSrc, rootDest);
+	            edgesCount++;
+	        }
+	    }
+	    return mstMatrix;
+	}
+
+	// Hàm tìm gốc (find) trong Union-Find
+	private int findRoot(int[] parent, int i) {
+	    if (parent[i] == i) return i;
+	    return parent[i] = findRoot(parent, parent[i]); // Path compression
+	}
+
+	// Hàm hợp nhất (union) trong Union-Find
+	private void union(int[] parent, int x, int y) {
+	    int rootX = findRoot(parent, x);
+	    int rootY = findRoot(parent, y);
+	    parent[rootX] = rootY;
+	}
+}
+
+	

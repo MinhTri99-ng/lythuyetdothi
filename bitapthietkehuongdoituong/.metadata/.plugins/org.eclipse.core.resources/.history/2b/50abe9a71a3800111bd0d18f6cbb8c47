@@ -1,0 +1,168 @@
+package baitaptuan5;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Stack;
+
+public class UnGraph extends Graph {
+
+	@Override
+	public void addEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		if (!isValidVertex(v1) || !isValidVertex(v2))
+			return;
+		adjacencyMatrix[v1][v2] = 1;
+		adjacencyMatrix[v2][v1] = 1;
+		System.out.println("thanhcog");
+
+	}
+
+	@Override
+	public void removeEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		if (!isValidVertex(v1) || !isValidVertex(v2))
+			return;
+		adjacencyMatrix[v1][v2] = 0;
+		adjacencyMatrix[v2][v1] = 0;
+
+	}
+
+	public int deg(int v) {
+		// TODO Auto-generated method stub
+		if (!isValidVertex(v)) {
+			System.out.println("đỉnh không hợp lệ");
+			return -1;
+		}
+		int deg = 0;
+		for (int i = 0; i < numVertices; i++) {
+			deg += adjacencyMatrix[v][i];
+
+		}
+		return deg;
+	}
+	// tổng tất cả các phần tử 1 trong ma trận chia 2 (định lí bắt tay, tổng tất cả
+	// các bậc của đỉnh bằng 2 lần cạnh)
+
+	@Override
+	public int numEdges() {
+		// TODO Auto-generated method stub
+		int sum = 0;
+		for (int i = 0; i < numVertices; i++) {
+			for (int j = 0; j < numVertices; j++) {
+				sum += adjacencyMatrix[i][j];
+
+			}
+
+		}
+		return sum / 2;
+	}
+	// tính tổng bậc của đỉnh và kiểm chứng xem có đúng hay không(tổng bậc của đỉnh
+	// =2m);
+
+	@Override
+	public int sumDeg() {
+		// TODO Auto-generated method stub
+		int sum = 0;
+		for (int i = 0; i < numVertices; i++) {
+			sum += deg(i);
+
+		}
+		if (sum == 2 * numEdges()) {
+			System.out.println("Đúng định lý tổng bậc = 2 * số cạnh");
+		} else {
+			System.out.println("làm sai phần nào đó rồi");
+		}
+		return sum;
+	}
+
+	@Override
+	public boolean isConnected() {
+		if (numVertices == 0) return true;
+	    int[] res = DFS(0);
+	    return res.length == numVertices;
+	}
+
+	@Override
+	public int[] DFS(int startVertex) {
+		boolean[] visited = new boolean[numVertices];
+	    List<Integer> result = new ArrayList<>();
+	    Stack<Integer> stack = new Stack<>();
+	    
+	    stack.push(startVertex);
+	    while (!stack.isEmpty()) {
+	        int v = stack.pop();
+	        if (!visited[v]) {
+	            visited[v] = true;
+	            result.add(v);
+	            for (int i = numVertices - 1; i >= 0; i--) {
+	                if (adjacencyMatrix[v][i] == 1 && !visited[i]) stack.push(i);
+	            }
+	        }
+	    }
+	    return result.stream().mapToInt(i -> i).toArray();
+	}
+
+	@Override
+	public void connectedComponents() {
+		int count = 0;
+		int[] index = new int[numVertices];
+		Arrays.fill(index, -1);
+		for (int i = 0; i < numVertices; i++) {
+			if (visited[i] == false) {
+				count++;
+				index[i] = count;
+				DFSRe(i);
+				for (int j = 0; j < numVertices; j++) {
+					if (visited[j] == true && index[j] == -1) {
+						index[j] = count;
+					}
+				}
+			}
+		}
+
+		for (int i = 1; i <= count; i++) {
+			System.out.print("Thanh phan lien thong thu " + i + "  gom cac dinh: ");
+			for (int j = 0; j < numVertices; j++) {
+				if (index[j] == i) {
+					System.out.print((j + 1) + " ");
+				}
+			}
+			System.out.println();
+
+		}
+	}
+
+	private void DFSRe(int v) {
+	    // Đánh dấu đỉnh hiện tại đã thăm
+	    visited[v] = true;
+	    
+	    // Duyệt qua tất cả các đỉnh kề với v
+	    for (int i = 0; i < numVertices; i++) {
+	        // Nếu có cạnh nối và đỉnh i chưa được thăm
+	        if (adjacencyMatrix[v][i] != 0 && !visited[i]) {
+	            DFSRe(i); // Đệ quy để thăm tiếp
+	        }
+	    }
+	}
+
+	@Override
+	public void findPath(int s, int t) {
+		// TODO Auto-generated method stub
+		visited[s] = true;
+		System.out.print((s + 1) + " ");
+		if (s == t) {
+			return;
+		}
+
+		for (int i = 0; i < numVertices; i++) {
+			if (adjacencyMatrix[s][i] > 0 && visited[i]==false) {
+				findPath(i, t);
+				return; 
+
+			}
+		}
+	}
+}
+
+	

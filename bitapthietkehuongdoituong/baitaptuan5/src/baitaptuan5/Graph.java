@@ -1,0 +1,151 @@
+package baitaptuan5;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+
+public abstract class Graph {
+	protected int numVertices; // số lượng đỉnh
+	protected int[][] adjacencyMatrix; // ma trận kề
+	protected int[][] originalMatrix;// biến lưu ma trận ban đầu
+	protected boolean[] visited;
+	/*
+	 * Nhận đường dẫn file ↓ Kiểm tra file tồn tại? ↓ Đọc số đỉnh ↓ Tạo ma trận kề ↓
+	 * Đọc từng dòng dữ liệu ↓ Lưu vào matrixAdj[][] ↓ Trả về true
+	 */
+
+	public boolean loadGraph(String pathFile) throws NumberFormatException, IOException { // đọc file chứa dữ liệu đồ
+																							// thị và lưu vào ma trận kề
+		File f = new File(pathFile);
+		if (f.exists() == false) { // kiểm tra xem đường dẫn file có hay không
+			System.out.println("file khong tồn tại");
+			return false;
+		}
+		FileReader reader = new FileReader(f); // đọc file
+		BufferedReader input = new BufferedReader(reader); // đọc nhanh hơn, đọc từng dòng
+		this.numVertices = Integer.valueOf(input.readLine());
+		this.adjacencyMatrix = new int[numVertices][numVertices];
+		String line = "";
+		int rows = 0;
+		while ((line = input.readLine()) != null) {
+			String[] items = line.split(" ");// xóa khoảng cách trả về 1 mảng
+			for (int i = 0; i < items.length; i++) {
+				adjacencyMatrix[rows][i] = Integer.valueOf(items[i]);
+			}
+			rows++;
+		}
+		input.close();
+		if (rows != numVertices) {
+			System.out.println("Error File");
+			return false;
+		}
+		return true;
+
+	}
+
+	public void printMatrix() {
+		for (int i = 0; i < adjacencyMatrix.length; i++) {
+			for (int j = 0; j < adjacencyMatrix.length; j++) {
+				System.out.print(adjacencyMatrix[i][j] + " ");
+
+			}
+			System.out.println();
+
+		}
+	}
+
+	// Kiểm tra ma trận đồ thị hợp lệ (ma trận vuông, chỉ chứa 0/1)
+	public boolean checkValid() {
+		// chưa được tạo hay trỏ tới null là không hợp lệ
+		// ============lưu ý dòng này=====
+		if (adjacencyMatrix == null)
+			return false;
+		// check số dòng coi bằng số đỉnh hay không
+		if (adjacencyMatrix.length != numVertices)
+			return false;
+
+		for (int i = 0; i < numVertices; i++) {
+			// check dòng có null hay không
+			if (adjacencyMatrix[i] == null)
+				return false;
+			// check số cột coi bằng số đỉnh hay không(dòng i có bao nhiêu phần tử)
+			if (adjacencyMatrix[i].length != numVertices)
+				return false;
+			// check chỉ chứa 0/1
+
+			for (int j = 0; j < numVertices; j++) {
+				if (adjacencyMatrix[i][j] != 0 && adjacencyMatrix[i][j] != 1)
+					return false;
+
+			}
+
+		}
+
+		return true;
+	}
+
+	// Kiểm tra đồ thị vô hướng (ma trận kề đối xứng), a nối b thì b phải nối a
+	public boolean checkUndirected() {
+		for (int i = 0; i < numVertices; i++) {
+			for (int j = 0; j < numVertices; j++) {
+				if (adjacencyMatrix[i][j] != adjacencyMatrix[j][i])
+					return false;
+
+			}
+
+		}
+		return true;
+	}
+
+	protected boolean isValidVertex(int v) { // hàm check xem cho dòng cột đúng chưa
+
+		return v >= 0 && v < numVertices;
+	}
+
+	public abstract void addEdge(int v1, int v2);
+
+	public abstract void removeEdge(int v1, int v2);
+
+	// lưu ma trận ban đầu
+	public void saveOriginalMatrix() {
+		this.originalMatrix = new int[numVertices][numVertices];
+		for (int i = 0; i < numVertices; i++) {
+			for (int j = 0; j < numVertices; j++) {
+				originalMatrix[i][j] = adjacencyMatrix[i][j];
+
+			}
+
+		}
+
+	}
+
+	public void restoreGraph() { // hàm khôi phục ma trận
+		if (originalMatrix == null) {
+			System.out.println("chưa lưu ma trận ban đầu");
+			return;
+		} else {
+			for (int i = 0; i < numVertices; i++) {
+				for (int j = 0; j < numVertices; j++) {
+					adjacencyMatrix[i][j] = originalMatrix[i][j];
+
+				}
+
+			}
+
+		}
+	}
+
+	public abstract int numEdges() ;
+
+	public abstract int sumDeg();
+
+	public abstract boolean isConnected();
+	public abstract int[] DFS(int startVertex);
+	public abstract void connectedComponents();
+	public abstract void findPath(int s, int t);
+
+	
+	
+}

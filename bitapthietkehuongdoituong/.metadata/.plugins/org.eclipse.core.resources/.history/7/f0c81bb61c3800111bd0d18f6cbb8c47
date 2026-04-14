@@ -1,0 +1,90 @@
+package baitaptuan5;
+
+import java.util.Arrays;
+
+public class TestMain {
+    public static void main(String[] args) {
+        UnGraph g = new UnGraph();
+        g.init(6);
+
+        // ====== TẠO ĐỒ THỊ ======
+        g.addEdge(0, 1);
+        g.addEdge(0, 2);
+        g.addEdge(1, 2);
+        g.addEdge(1, 3);
+        g.addEdge(3, 4);
+        g.addEdge(4, 5);
+
+        System.out.println("===== MA TRAN KE =====");
+        g.printMatrix();
+
+        // ====== DFS ======
+        System.out.println("\n===== DFS =====");
+        int[] dfs = g.DFS(0);
+        System.out.println("DFS: " + Arrays.toString(dfs));
+
+        // ====== LIEN THONG ======
+        System.out.println("\n===== LIEN THONG =====");
+        System.out.println("Do thi lien thong: " + g.isConnected());
+
+        // ====== CAC THANH PHAN LIEN THONG ======
+        System.out.println("\n===== THANH PHAN LIEN THONG =====");
+        g.resetVisited();
+        g.connectedComponents();
+
+        // ====== BAC DINH ======
+        System.out.println("\n===== BAC DINH =====");
+        for (int i = 0; i < 6; i++) {
+            System.out.println("deg(" + i + ") = " + g.deg(i));
+        }
+
+        // ====== SO CANH ======
+        System.out.println("\nSo canh: " + g.numEdges());
+
+        // ====== TONG BAC ======
+        System.out.println("Tong bac: " + g.sumDeg());
+
+        // ====== TIM DUONG ======
+        System.out.println("\n===== TIM DUONG 0 -> 5 =====");
+        g.resetVisited();
+        g.findPath(0, 5);
+
+        // ====== BIPARTITE ======
+        System.out.println("\n\n===== BIPARTITE =====");
+        System.out.println("La do thi 2 phia: " + g.isBipartite());
+
+        // ====== EULER ======
+        System.out.println("\n===== EULER =====");
+        System.out.println("Euler: " + g.isEulerGraph());
+        System.out.println("Half Euler: " + g.isHalfEulerGraph());
+
+        // ====== CHU TRINH EULER ======
+        System.out.println("\n===== CHU TRINH EULER =====");
+        g.findEulerCycle();
+
+        // ====== HAMILTON ======
+        System.out.println("\n===== HAMILTON =====");
+        g.findHamiltonCycle();
+
+        // ====== SPANNING TREE DFS ======
+        System.out.println("\n===== SPANNING TREE DFS =====");
+        int[][] tree = g.spanningTreeDFS(0);
+        printMatrix(tree);
+
+        // ====== PRIM ======
+        System.out.println("\n===== PRIM =====");
+        int[][] prim = g.prim(0);
+        printMatrix(prim);
+
+        // ====== KRUSKAL ======
+        System.out.println("\n===== KRUSKAL =====");
+        int[][] kruskal = g.kruskal();
+        printMatrix(kruskal);
+    }
+
+    public static void printMatrix(int[][] matrix) {
+        for (int[] row : matrix) {
+            System.out.println(Arrays.toString(row));
+        }
+    }
+}
