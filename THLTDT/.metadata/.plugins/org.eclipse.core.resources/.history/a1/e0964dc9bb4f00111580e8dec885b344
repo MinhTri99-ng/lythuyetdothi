@@ -1,0 +1,104 @@
+package demo;
+import java.util.ArrayList;
+import java.util.List;
+
+public class DiGraph extends Graph {
+
+	public DiGraph(int numberOfVertex, int[][] matrixAdj) {
+		super(numberOfVertex, matrixAdj);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void addEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		if (v1 >= 0 && v1 < numberOfVertex && v2 >= 0 && v2 < numberOfVertex) {
+            matrixAdj[v1][v2] = 1;
+        }
+        System.out.println("Out of number of vertex");
+        return;
+	}
+
+	@Override
+	public void removeEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		if (v1 >= 0 && v1 < numberOfVertex && v2 >= 0 && v2 < numberOfVertex) {
+            matrixAdj[v1][v2] = 0;
+        }
+        System.out.println("Out of number of vertex");
+        return;
+	}
+	@Override
+    public int deg(int v) {
+        if (v < 0 || v >= numberOfVertex) {
+            return -1;
+        }
+        return inDegree(v) + outDegree(v);
+    }
+
+    @Override
+    public void printPath(int[] path) {
+        super.printPath(path);
+    }
+
+    @Override
+    public void reSetAll() {
+        super.reSetAll();
+    }
+
+    @Override
+    public int[] DFS(int startVertex) {
+        return new int[0];
+    }
+
+    @Override
+    public void DFS1(int startVertex) {
+
+    }
+
+    @Override
+    public List DFS2(int startVertex) {
+        return List.of();
+    }
+
+    @Override
+    public ArrayList DFS3(int startVertex) {
+        return null;
+    }
+
+    @Override
+    public int[] DFS() {
+        return new int[0];
+    }
+
+    @Override
+    public int[] DFSRe(int startVertex) {
+        return new int[0];
+    }
+
+    @Override
+    public int[] DFSRe() {
+        return new int[0];
+    }
+
+    @Override
+    public int[] BFS(int startVertex) {
+        return new int[0];
+    }
+
+    @Override
+    public int[] BFS() {
+        return new int[0];
+    }
+
+    @Override
+    public void BFS2(int startVertex) {
+
+    }
+
+    @Override
+    public void BFS2() {
+
+    }
+
+}

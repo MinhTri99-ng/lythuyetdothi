@@ -1,0 +1,282 @@
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+
+import demo.Graph;
+
+public class UnGraph extends Graph {
+	    int pos = 0;
+	    int[] x;
+	    public UnGraph(String path) {
+	        super(path);
+	        pathDFS = new int[numberOfVertex];
+	    }
+	public UnGraph(int numberOfVertex, int[][] matrixAdj) {
+		super(numberOfVertex, matrixAdj);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void addEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		   if (v1 < 0 || v1 >= numberOfVertex || v2 < 0 || v2 >= numberOfVertex) {
+	            System.out.println("Out of numberOfvertex");
+	            return;
+	        }
+	        matrixAdj[v1][v2] = matrixAdj[v2][v1] = 1;
+	}
+
+	@Override
+	public void removeEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		   if (v1 < 0 || v1 >= numberOfVertex || v2 < 0 || v2 >= numberOfVertex) {
+	            System.out.println("Out of numberOfvertex");
+	            return;
+	        }
+	        matrixAdj[v1][v2] = matrixAdj[v2][v1] = 0;
+	}
+
+	@Override
+	public int deg(int v) {
+		// TODO Auto-generated method stub
+		if(v<0 || v>= numberOfVertex) {
+			System.out.println("Not valid degree");
+			return -1;
+		}
+		int count=0;
+		for(int i=0;i< numberOfVertex;i++) {
+			if(matrixAdj[v][i]==1) {
+				count++;
+			}
+		}
+		if(matrixAdj[v][v]==1) {
+			count++;
+		}
+		return count;
+	}
+	@Override
+    public int numEdges() {
+        int count = 0;
+        for (int i = 0; i < numberOfVertex; i++) {
+            for (int j = i; j < numberOfVertex; j++) {
+                if (matrixAdj[i][j] == 1) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+	
+	@Override
+    public void printPath(int[] path) {
+        super.printPath(path);
+    }
+	
+	@Override
+	public int[] DFS(int startVertex) {
+		// TODO Auto-generated method stub
+		reSetAll();
+		int[] result =new int[numberOfVertex];
+		Stack<Integer> st=new Stack<>();
+		st.push(startVertex);
+		visited[startVertex]=true;
+		int pos=0;
+		while(!st.isEmpty()) {
+			int u=st.pop();
+			result[pos]=u;
+			pos++;
+			for(int i=numberOfVertex-1 ;i>=0;i--) {
+				if(matrixAdj[u][i]>0 && !visited[i]) {
+					st.push(i);
+					visited[i]=true;
+				}
+			}
+		}
+		printPath(result);
+		return result;
+	}
+
+	@Override
+	public int[] DFS() {
+		// TODO Auto-generated method stub
+		  reSetAll();
+	        int[] result = new int[numberOfVertex];
+	        int index = 0;
+	        for (int i = 0; i < numberOfVertex; i++) {
+	            if (!visited[i]) {
+	                Stack<Integer> stack = new Stack<>();
+	                stack.push(i);
+	                visited[i] = true;
+	                while (!stack.isEmpty()) {
+	                    int u = stack.pop();
+	                    result[index] = u;
+	                    index++;
+	                    for (int j = numberOfVertex - 1; j >= 0; j--) {
+	                        if (matrixAdj[u][j] > 0 && !visited[j]) {
+	                            stack.push(j);
+	                            visited[j] = true;
+	                        }
+
+	                    }
+	                }
+	            }
+	        }
+	        return result;
+	}
+
+	@Override
+	 public void DFS1(int startVertex) {
+        DFS(startVertex);
+    }
+
+	@Override
+	public List<Integer> DFS2(int startVertex) {
+		// TODO Auto-generated method stub
+		 reSetAll();
+	        List<Integer> list = new ArrayList<>();
+	        Stack<Integer> stack = new Stack<>();
+	        stack.push(startVertex);
+	        visited[startVertex] = true;
+	        while (!stack.isEmpty()) {
+	            int u = stack.pop();
+	            list.add(u);
+	            for (int i = numberOfVertex - 1; i >= 0; i--) {
+	                if (matrixAdj[u][i] > 0 && !visited[i]) {
+	                    stack.push(i);
+	                    visited[i] = true;
+	                }
+
+	            }
+	        }
+	        return list;
+	}
+
+	@Override
+    public ArrayList<Integer> DFS3(int startVertex) {
+        return (ArrayList<Integer>) DFS2(startVertex);
+    }
+
+	@Override
+	 public int[] DFSRe(int startVertex) {
+        if (pathDFS == null || pathDFS.length != numberOfVertex) {
+            pathDFS = new int[numberOfVertex];
+            pos = 0;
+            reSetAll();
+        }
+
+        visited[startVertex] = true;
+        pathDFS[pos] = startVertex;
+        pos++;
+        for (int i = 0; i < numberOfVertex; i++) {
+            if (matrixAdj[startVertex][i] > 0 && !visited[i]) {
+                DFSRe(i);
+            }
+        }
+        return pathDFS;
+    }
+
+	@Override
+	public int[] DFSRe() {
+        reSetAll();
+        pathDFS = new int[numberOfVertex];
+        pos = 0;
+        for (int i = 0; i < numberOfVertex; i++) {
+            if (!visited[i]) {
+                DFSRe(i);
+            }
+        }
+        return pathDFS;
+    }
+    @Override
+    public void BFS2(int startVertex) {
+        reSetAll();
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(startVertex);
+        visited[startVertex] = true;
+        while (!queue.isEmpty()) {
+            int u = queue.remove();
+            System.out.print((u + 1) + " ");
+            for (int i = 0; i < numberOfVertex; i++) {
+                if (matrixAdj[u][i] > 0 && !visited[i]) {
+                    queue.add(i);
+                    visited[i] = true;
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    @Override
+    public void BFS2() {
+        reSetAll();
+        for (int i = 0; i < numberOfVertex; i++) {
+            if (!visited[i]) {
+                Queue<Integer> queue = new LinkedList<>();
+                queue.add(i);
+                visited[i] = true;
+                while (!queue.isEmpty()) {
+                    int u = queue.remove();
+                    System.out.print((u + 1) + " ");
+                    for (int j = 0; j < numberOfVertex; j++) {
+                        if (matrixAdj[u][j] > 0 && !visited[j]) {
+                            queue.add(j);
+                            visited[j] = true;
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    @Override
+    public int[] BFS(int startVertex) {
+        reSetAll();
+        int[] result = new int[numberOfVertex];
+        int index = 0;
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(startVertex);
+        visited[startVertex] = true;
+        while (!queue.isEmpty()) {
+            int u = queue.remove();
+            result[index] = u;
+            index++;
+            for (int i = 0; i < numberOfVertex; i++) {
+                if (matrixAdj[u][i] > 0 && !visited[i]) {
+                    queue.add(i);
+                    visited[i] = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public int[] BFS() {
+        reSetAll();
+        int[] result = new int[numberOfVertex];
+        int index = 0;
+        for (int i = 0; i < numberOfVertex; i++) {
+            if (!visited[i]) {
+                Queue<Integer> queue = new LinkedList<>();
+                queue.add(i);
+                visited[i] = true;
+                while (!queue.isEmpty()) {
+                    int u = queue.remove();
+                    result[index] = u;
+                    index++;
+                    for (int j = 0; j < numberOfVertex; j++) {
+                        if (matrixAdj[u][j] > 0 && !visited[j]) {
+                            queue.add(j);
+                            visited[j] = true;
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+}

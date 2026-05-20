@@ -1,0 +1,6 @@
+INDEX VERSION 1.134+C:\Users\laptop usa pro\Desktop\THLTDT\.metadata\.plugins\org.eclipse.jdt.core
+1032860328.index
+3303111633.index
+1865797976.index
+1200522136.index
+2241348809.index

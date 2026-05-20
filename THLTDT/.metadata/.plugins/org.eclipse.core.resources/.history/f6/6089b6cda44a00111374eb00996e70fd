@@ -1,0 +1,103 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class UnGraph extends Graph {
+
+	public UnGraph(int numberOfVertex, int[][] matrixAdj) {
+		super(numberOfVertex, matrixAdj);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void addEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		   if (v1 < 0 || v1 >= numberOfVertex || v2 < 0 || v2 >= numberOfVertex) {
+	            System.out.println("Out of numberOfvertex");
+	            return;
+	        }
+	        matrixAdj[v1][v2] = matrixAdj[v2][v1] = 1;
+	}
+
+	@Override
+	public void removeEdge(int v1, int v2) {
+		// TODO Auto-generated method stub
+		   if (v1 < 0 || v1 >= numberOfVertex || v2 < 0 || v2 >= numberOfVertex) {
+	            System.out.println("Out of numberOfvertex");
+	            return;
+	        }
+	        matrixAdj[v1][v2] = matrixAdj[v2][v1] = 0;
+	}
+
+	@Override
+	public int deg(int v) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int[] DFS(int startVertex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] DFS() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void DFS1(int startVertex) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Integer> DFS2(int startVertex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ArrayList DFS3(int startVertex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] DFSRe(int startVertex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] DFSRe() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] BFS(int startVertex) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int[] BFS() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void BFS2(int startVertex) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void BFS2() {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
