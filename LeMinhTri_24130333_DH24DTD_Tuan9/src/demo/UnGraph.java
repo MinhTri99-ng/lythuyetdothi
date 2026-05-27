@@ -74,7 +74,7 @@ public class UnGraph extends Graph {
 	public int[] DFS(int startVertex) {
 		// TODO Auto-generated method stub
 		reSetAll();
-		int[] result = new int[numberOfVertexs];
+		int[] result = new int[numberOfVertexs];//tạo mảng lưu thứ tự DFS.
 		Stack<Integer> st = new Stack<>();
 		st.push(startVertex);
 		visited[startVertex] = true;
@@ -83,7 +83,7 @@ public class UnGraph extends Graph {
 			int u = st.pop();
 			result[pos] = u;
 			pos++;
-			for (int i = numberOfVertexs - 1; i >= 0; i--) {
+			for (int i = numberOfVertexs - 1; i >= 0; i--) {//Duyệt ngược vì Stack từ sau ra trước
 				if (matrixAdj[u][i] > 0 && visited[i] == false) {
 					st.push(i);
 					visited[i] = true;
@@ -117,15 +117,16 @@ public class UnGraph extends Graph {
 	}
 
 	@Override
-	public void BFS(int startVertex) {
+	public void BFS(int startVertex) {//duyệt đồ thị
+//		IN KẾT QUẢ ra màn hình
 		// TODO Auto-generated method stub
-		reSetAll();
+		reSetAll();//chạy độc lập được.
 		Queue<Integer> queue = new LinkedList<>();
 		queue.add(startVertex);
 		visited[startVertex] = true;
 		while (!queue.isEmpty()) {
 			int u = queue.remove();
-			System.out.print((u + 1) + " ");
+			System.out.print((u + 1) + " ");//xuất thứ tự BFS.
 			for (int i = 0; i < numberOfVertexs; i++) {
 				if (matrixAdj[u][i] > 0 && visited[i] == false) {
 					queue.add(i);
@@ -901,6 +902,26 @@ public class UnGraph extends Graph {
 			printMatrix(W);
 			System.out.println("(P" + (k + 1) + ")");
 			printMatrix(P);
+		}
+	}
+
+	@Override
+	public void Warshall() {
+		// TODO Auto-generated method stub
+		for(int k=0;k<matrixAdj.length;k++) {
+			for(int i=0;i<matrixAdj.length;i++) {
+				for(int j=0;j<matrixAdj.length;j++) {
+					if(matrixAdj[i][k]==1 && matrixAdj[k][j]==1) {
+						matrixAdj[i][j]=1;
+					}
+				}
+			}
+		}
+		for(int i=0;i<matrixAdj.length;i++) {
+			for(int j=0;j<matrixAdj.length;j++) {
+				  System.out.print(matrixAdj[i][j] + " ");
+			}
+			System.out.println();
 		}
 	}
 }

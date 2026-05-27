@@ -175,6 +175,6 @@ public abstract class Graph {
 		}
 		System.out.println();
 	}
-	
+	public abstract void Warshall() ;
 
 }

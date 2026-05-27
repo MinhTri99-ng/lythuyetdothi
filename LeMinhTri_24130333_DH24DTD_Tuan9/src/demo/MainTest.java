@@ -118,15 +118,19 @@ public class MainTest {
 //		System.out.println("=======Bellman Ford======");
 //		h1.algoBellmanFord(0);
 		
-		Graph g3 = new DiGraph("C:\\Users\\laptop usa pro\\Desktop\\LeMinhTri_24130333_DH24DTD_Tuan8\\src\\demo\\G3.txt");
-		g3.printMatrix();
-		System.out.println("=====FLOYD=====");
-		g3.floyd();
-		System.out.println("=====FLOYD MO RONG=====");
-		g3.floydExpand();
-    	Graph g3a = new UnGraph("C:\\Users\\laptop usa pro\\Desktop\\LeMinhTri_24130333_DH24DTD_Tuan8\\src\\demo\\G3A.txt");
-		g3a.printMatrix();
-		
+//		Graph g3 = new DiGraph("C:\\Users\\laptop usa pro\\Desktop\\LeMinhTri_24130333_DH24DTD_Tuan8\\src\\demo\\G3.txt");
+//		g3.printMatrix();
+//		System.out.println("=====FLOYD=====");
+//		g3.floyd();
+//		System.out.println("=====FLOYD MO RONG=====");
+//		g3.floydExpand();
+//    	Graph g3a = new UnGraph("C:\\Users\\laptop usa pro\\Desktop\\LeMinhTri_24130333_DH24DTD_Tuan8\\src\\demo\\G3A.txt");
+//		g3a.printMatrix();
+//		
+		Graph w3= new UnGraph("C:\\Users\\laptop usa pro\\Desktop\\LeMinhTri_24130333_DH24DTD_Tuan9\\src\\demo\\W3.txt");
+		w3.printMatrix();
+		System.out.println("=====WARSHALL=====");
+		w3.Warshall();
 	}
 
 
